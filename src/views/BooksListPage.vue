@@ -2,27 +2,24 @@
 import { useRoute } from "vue-router";
 import api from "../http/api";
 import { ref } from "vue";
-import { useAuthStore } from "../stores/auth";
+import { onMounted } from "vue";
 
-const authStore = useAuthStore();
-
-let isCharged = ref(false);
 let books = ref([]);
 
-const loadBooks = async () => {
-  try {
+onMounted(async () => {
+    try {
     // L'intercepteur ajoute automatiquement le header Authorization
     const response = await api.get("/books");
 
     console.log(response.data);
     books.value = response.data;
-    isCharged.value = true;
+    
   } catch (error) {
     console.error(error);
   }
-};
+});
 
-loadBooks();
+
 </script>
 
 <template>
@@ -44,10 +41,7 @@ loadBooks();
     <main class="container mx-auto px-6 py-12">
       <h2 class="text-4xl font-bold text-white mb-8">Books Collection</h2>
 
-      <div
-        v-if="isCharged"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Book Card -->
         <div
           v-for="book in books"

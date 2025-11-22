@@ -2,28 +2,25 @@
 import { useRoute } from "vue-router";
 import api from "../http/api";
 import { ref } from "vue";
-import { useAuthStore } from "../stores/auth";
+import { onMounted } from "vue";
 
 const route = useRoute();
 const authorId = route.params.id;
 
-let isCharged = ref(false);
 let author = ref([]);
 
-const loadAuthor = async () => {
-  try {
+onMounted(async () => {
+    try {
     // L'intercepteur ajoute automatiquement le header Authorization
     const response = await api.get("/authors/" + authorId);
 
     console.log(response.data);
     author.value = response.data;
-    isCharged.value = true;
   } catch (error) {
     console.error(error);
   }
-};
+});
 
-loadAuthor();
 </script>
 
 <template>
@@ -43,10 +40,7 @@ loadAuthor();
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-12">
-      <div
-        v-if="isCharged"
-        class="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-12 shadow-2xl"
-      >
+      <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-lg rounded-2xl p-12 shadow-2xl">
         <h2 class="text-5xl font-bold text-white mb-4">{{ author.name }}</h2>
 
         <div class="border-t border-white/30 pt-8">
